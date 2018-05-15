@@ -1,18 +1,28 @@
-import {Middleware, Dispatch} from "redux";
+import { Action, Middleware, Dispatch } from "redux";
 
+/**
+ * ThunkActions return a function, allowing for asynchronous tasks to be better
+ * executed, providing access to dispatch, getState, and extra arguments.
+ */
+export type ThunkAction<Result, State, Extras, ActionType = Action> = (
+    dispatch: Dispatch<Action>,
+    getState: () => State,
+    extraArgument: Extras
+) => Result;
 
-export type ThunkAction<R, S, E> = (dispatch: Dispatch<S>, getState: () => S,
-                                    extraArgument: E) => R;
-
-declare module "redux" {
-  export interface Dispatch<S> {
-    <R, E>(asyncAction: ThunkAction<R, S, E>): R;
-  }
-}
-
-
+/**
+ * Thunk middleware for applying to your store.
+ *
+ * Example:
+ * ```
+ const store = createStore(
+     combineReducers(...reducers),
+        applyMiddleware(thunk),
+    );
+    ```
+    */
 declare const thunk: Middleware & {
-  withExtraArgument(extraArgument: any): Middleware;
+    withExtraArgument(extraArgument: any): Middleware;
 };
 
 export default thunk;
